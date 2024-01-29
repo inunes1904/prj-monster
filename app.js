@@ -9,9 +9,28 @@ const app = Vue.createApp({
             monsterHealth: 100,
             gameIsRunning: false,
             turns: [],
-            currentRound: 0
+            currentRound: 0,
+            result: ''
         }
     },
+  watch:{
+
+      playerHealth(value){
+        if(value <= 0 && this.monsterHealth<=0 ){
+          this.result = 'DRAW';
+        }else if(value<=0){
+          this.result = 'LOSE';
+        }
+        },
+      monsterHealth(value){
+        if(value <= 0 && this.playerHealth<=0 ){
+          this.result = 'DRAW';
+        }else if(value<=0){
+          this.result = 'WIN';
+        }
+      }
+
+  },
   computed: {
     monsterBarStyles() {
       if (this.monsterHealth < 0) {
@@ -35,8 +54,12 @@ const app = Vue.createApp({
     },
     methods: {
       attackMonster() {
-        const attackValue = getRandomValue(5, 12);
-        this.monsterHealth -= attackValue;
+        const attackValue = getRandomValue(5, 12)
+        if (this.monsterHealth - attackValue < 0){
+          this.monsterHealth = 0;
+        }else{
+          this.monsterHealth -= attackValue;
+        }
         this.turns.unshift({
           isPlayer: true,
           text: 'Player hits Monster for ' + attackValue
@@ -46,7 +69,11 @@ const app = Vue.createApp({
       },
       attackPlayer() {
         const attackValue = getRandomValue(8, 15);
-        this.playerHealth -= attackValue;
+        if (this.playerHealth - attackValue<0){
+          this.playerHealth = 0;
+        }else{
+          this.playerHealth -= attackValue;
+        }
         this.turns.unshift({
           isPlayer: false,
           text: 'Monster hits Player for ' + attackValue
@@ -54,7 +81,11 @@ const app = Vue.createApp({
       },
       specialAttackMonster(){
         const attackValue = getRandomValue(10,25);
-        this.monsterHealth -= attackValue;
+        if (this.monsterHealth - attackValue < 0){
+          this.monsterHealth = 0;
+        }else{
+          this.monsterHealth -= attackValue;
+        }
         this.turns.unshift({
           isPlayer: true,
           text: 'Player hits Monster hard for ' + attackValue
@@ -71,6 +102,15 @@ const app = Vue.createApp({
         }
         this.attackPlayer();
         this.currentRound++;
+      },
+      startGame(){
+        this.playerHealth = 100;
+        this.monsterHealth = 100;
+        this.result = '';
+        this.currentRound = 0;
+      },
+      surrender(){
+        this.result = 'LOSE';
       }
     }
   });
