@@ -33,12 +33,15 @@
         <button @click="attackMonster">ATTACK</button>
         <button @click="specialAttackMonster"
                 :disabled="mayUseSpecialAttack">SPECIAL ATTACK</button>
-        <button>HEAL</button>
+        <button @click="healPlayer"
+                :disabled="mayUseHeal">HEAL</button>
         <button >SURRENDER</button>
       </section>
       <section id="log" class="container">
         <h2>Battle Log</h2>
-        <ul></ul>
+        <ul>
+          <li v-for="log in turns">{{ log }}</li>
+        </ul>
       </section>
     </div>
   </body>

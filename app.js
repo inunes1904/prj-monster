@@ -28,6 +28,9 @@ const app = Vue.createApp({
     mayUseSpecialAttack(){
       console.log((this.currentRound % 3 !== 0) && (this.currentRound === 0));
       return (this.currentRound % 3 !== 0) || (this.currentRound === 0);
+    },
+    mayUseHeal(){
+      return this.currentRound % 5 !== 0 || this.currentRound === 0;
     }
     },
     methods: {
@@ -56,6 +59,16 @@ const app = Vue.createApp({
           isPlayer: true,
           text: 'Player hits Monster hard for ' + attackValue
         });
+        this.attackPlayer();
+        this.currentRound++;
+      },
+      healPlayer(){
+        const healValue = getRandomValue(8,20);
+        if (this.playerHealth + healValue > 100){
+          this.playerHealth = 100;
+        } else {
+          this.playerHealth += healValue;
+        }
         this.attackPlayer();
         this.currentRound++;
       }
